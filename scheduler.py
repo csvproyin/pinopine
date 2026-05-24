@@ -2,12 +2,12 @@ import schedule
 import time
 
 from telegram_bot import send_message
-from market_news import get_market_news
+from news_fetcher import get_news
 
 
 def morning_update():
 
-    news = get_market_news()
+    news = get_news()
 
     message = (
         "📈 GOOD MORNING TRADERS\n\n"
