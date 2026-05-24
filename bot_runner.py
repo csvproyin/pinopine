@@ -1,3 +1,6 @@
+from flask import Flask
+from threading import Thread
+import os
 from portfolio import portfolio, save_portfolio
 from watchlist import watchlist, save_watchlist
 from alerts_data import alerts, save_alerts
@@ -13,6 +16,16 @@ from telegram_bot import send_message, get_updates
 from live_price import get_stock_price
 
 import time
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Bot is running!"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
 
 print("=" * 40)
 print("🤖 AI MARKET BOT IS LIVE")
@@ -30,6 +43,8 @@ send_message("🤖 AI Market Assistant is now LIVE!")
 morning_news = get_news()
 morning_result = analyze(morning_news)
 send_message("🌅 DAILY MARKET UPDATE\n\n" + morning_result)
+
+Thread(target=run_web).start()
 
 while True:
     updates = get_updates()
