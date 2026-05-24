@@ -47,6 +47,8 @@ send_message("🌅 DAILY MARKET UPDATE\n\n" + morning_result)
 
 Thread(target=run_web).start()
 
+Thread(target=run_scheduler).start()
+
 while True:
     updates = get_updates()
 
@@ -310,19 +312,19 @@ while True:
 
                 send_message(
                     "🤖 COMMAND MENU\n\n"
-                    "📊 /news - Latest market news\n"
+                    "📰 /news - Latest market news\n"
                     "📈 /nifty - Nifty analysis\n"
                     "🏦 /banknifty - BankNifty analysis\n"
                     "₿ /btc - Bitcoin analysis\n"
                     "📉 /stock <name> - Analyze any stock\n"
-                    "/price <name>\n"
-                    "/gainers\n"
-                    "/losers\n"
-                    "/chart <name>\n"
-                    "/signal <name>\n"
-                    "/alert <stock> <price>\n"
-                    "/buy <stock> <qty>\n"
-                    "/portfolio"
+                    "💸 /price <name>\n"
+                    "📈 /gainers\n"
+                    "📉 /losers\n"
+                    "📊 /chart <name>\n"
+                    "🚥 /signal <name>\n"
+                    "🚨 /alert <stock> <price>\n"
+                    "💼 /buy <stock> <qty>\n"
+                    "📦 /portfolio\n"
                 )
 
         except Exception as e:
