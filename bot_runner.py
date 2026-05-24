@@ -1,3 +1,4 @@
+from scheduler import run_scheduler
 from flask import Flask
 from threading import Thread
 import os
