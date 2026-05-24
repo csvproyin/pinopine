@@ -5,3 +5,4 @@ mplfinance
 matplotlib
 pandas
 python-dotenv
+flask
