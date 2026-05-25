@@ -307,24 +307,42 @@ while True:
                 message += f"💰 Total Portfolio Value: ₹{round(total_value,2)}"
                 send_message(message)
 
+            elif text == "/start":
+
+                send_message(
+                    "🤖 AI MARKET ASSISTANT\n\n"
+                    "📈 Live stock analysis\n"
+                    "📰 AI market news\n"
+                    "💼 Portfolio tracking\n"
+                    "🚨 Trading signals & alerts\n\n"
+                    "Type /help to see all commands 😏🔥"
+                )
+
             # HELP
             elif text == "/help":
 
                 send_message(
-                    "🤖 COMMAND MENU\n\n"
-                    "📰 /news - Latest market news\n"
-                    "📈 /nifty - Nifty analysis\n"
-                    "🏦 /banknifty - BankNifty analysis\n"
-                    "₿ /btc - Bitcoin analysis\n"
-                    "📉 /stock <name> - Analyze any stock\n"
-                    "💸 /price <name>\n"
-                    "📈 /gainers\n"
-                    "📉 /losers\n"
-                    "📊 /chart <name>\n"
-                    "🚥 /signal <name>\n"
-                    "🚨 /alert <stock> <price>\n"
-                    "💼 /buy <stock> <qty>\n"
-                    "📦 /portfolio\n"
+                    "🤖 AI MARKET ASSISTANT\n\n"
+
+                    "📊 MARKET COMMANDS\n"
+                    "📰 /news → Latest market news\n"
+                    "📈 /nifty → Nifty analysis\n"
+                    "🏦 /banknifty → BankNifty analysis\n"
+                    "📉 /chart <stock> → Generate chart\n\n"
+
+                    "💼 PORTFOLIO\n"
+                    "💰 /buy <stock> <qty>\n"
+                    "📦 /portfolio → View holdings\n\n"
+
+                    "⭐ WATCHLIST\n"
+                    "👀 /watch <stock>\n"
+                    "📋 /mywatchlist\n\n"
+
+                    "🚨 ALERTS & AI\n"
+                    "⚡ /signal <stock>\n"
+                    "🚨 /alert <stock> <price>\n\n"
+
+                    "😏 Built with AI + real-time market data"
                 )
 
         except Exception as e:
