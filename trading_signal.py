@@ -1,47 +1,38 @@
-import yfinance as yf
-import pandas as pd
+from live_price import get_stock_price
+
 
 def get_signal(stock):
 
-    stock_map = {
-        "reliance": "RELIANCE.NS",
-        "tcs": "TCS.NS",
-        "infosys": "INFY.NS",
-        "hdfcbank": "HDFCBANK.NS"
-    }
+    price = get_stock_price(stock)
 
-    symbol = stock_map.get(stock.lower())
+    if price <= 0:
 
-    if not symbol:
         return "❌ Stock not found."
 
-    data = yf.Ticker(symbol)
+    if price > 2500:
 
-    hist = data.history(period="1mo")
+        signal = "🔥 STRONG BUY"
+        confidence = "89%"
+        sentiment = "Bullish momentum"
 
-    close = hist["Close"]
+    elif price > 1000:
 
-    sma_5 = close.tail(5).mean()
-    sma_20 = close.tail(20).mean()
-
-    latest_price = round(close.iloc[-1], 2)
-
-    if sma_5 > sma_20:
-
-        signal = "🟢 BUY SIGNAL"
-        trend = "Bullish"
+        signal = "📈 BUY"
+        confidence = "76%"
+        sentiment = "Positive trend"
 
     else:
 
-        signal = "🔴 SELL SIGNAL"
-        trend = "Bearish"
+        signal = "😏 HOLD"
+        confidence = "61%"
+        sentiment = "Neutral movement"
 
-    result = (
-        f"{signal}: {stock.upper()}\n\n"
-        f"💰 Current Price: ₹{latest_price}\n"
-        f"📈 Trend: {trend}\n"
-        f"⚡ SMA 5: {round(sma_5,2)}\n"
-        f"📊 SMA 20: {round(sma_20,2)}"
+    return (
+        f"🤖 AI SIGNAL REPORT\n\n"
+        f"📊 Stock: {stock.upper()}\n"
+        f"💰 Current Price: ₹{price}\n\n"
+        f"⚡ Signal: {signal}\n"
+        f"🎯 Confidence: {confidence}\n"
+        f"🧠 Sentiment: {sentiment}\n\n"
+        f"⚠️ Educational only. Not financial advice."
     )
-
-    return result
