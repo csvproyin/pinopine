@@ -1,3 +1,4 @@
+from market_movers import get_gainers, get_losers
 from scheduler import run_scheduler
 from flask import Flask
 from threading import Thread
@@ -317,6 +318,14 @@ while True:
                     "🚨 Trading signals & alerts\n\n"
                     "Type /help to see all commands 😏🔥"
                 )
+
+            elif text == "/gainers":
+
+                send_message(get_gainers())
+
+            elif text == "/losers":
+
+                send_message(get_losers())
 
             # HELP
             elif text == "/help":
