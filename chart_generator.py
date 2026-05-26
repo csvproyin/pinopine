@@ -3,30 +3,20 @@ import mplfinance as mpf
 
 def generate_chart(stock):
 
-    stock_map = {
-        "reliance": "RELIANCE.NS",
-        "tcs": "TCS.NS",
-        "infosys": "INFY.NS",
-        "hdfcbank": "HDFCBANK.NS"
-    }
+    data = yf.download(stock + ".NS", period="1mo", interval="1d")
 
-    symbol = stock_map.get(stock.lower())
-
-    if not symbol:
+    if data.empty:
         return None
-
-    data = yf.Ticker(symbol)
-
-    hist = data.history(period="1mo")
 
     filename = f"{stock}_candles.png"
 
     mpf.plot(
-        hist,
+        data,
         type="candle",
-        style="charles",
-        title=f"{stock.upper()} Candlestick Chart",
+        mav=(5, 10),
         volume=True,
+        style="yahoo",
+        title=f"{stock.upper()} Stock Chart",
         savefig=filename
     )
 
