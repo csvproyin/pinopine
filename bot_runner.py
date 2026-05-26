@@ -1,7 +1,6 @@
 from alerts_data import add_alert
 from alerts_data import check_alerts
 from market_news import get_market_news
-from market_movers import get_gainers, get_losers
 from scheduler import run_scheduler
 from flask import Flask
 from threading import Thread

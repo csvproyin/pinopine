@@ -1,41 +1,29 @@
 import yfinance as yf
 
+STOCKS = {
+    "RELIANCE": "RELIANCE.NS", "TCS": "TCS.NS", "INFY": "INFY.NS",
+    "HDFCBANK": "HDFCBANK.NS", "ICICIBANK": "ICICIBANK.NS",
+    "SBIN": "SBIN.NS", "AXISBANK": "AXISBANK.NS", "ITC": "ITC.NS",
+    "WIPRO": "WIPRO.NS", "TATAMOTORS": "TATAMOTORS.NS",
+    "MARUTI": "MARUTI.NS", "SUNPHARMA": "SUNPHARMA.NS",
+    "TATASTEEL": "TATASTEEL.NS", "BHARTIARTL": "BHARTIARTL.NS",
+    "LT": "LT.NS"
+}
+
 def get_gainers():
-
-    stocks = {
-        "RELIANCE": "RELIANCE.NS",
-        "TCS": "TCS.NS",
-        "INFY": "INFY.NS",
-        "HDFCBANK": "HDFCBANK.NS",
-        "ICICIBANK": "ICICIBANK.NS"
-    }
-
     results = []
-
-    for name, symbol in stocks.items():
-
+    for name, symbol in STOCKS.items():
         try:
-
-            data = yf.Ticker(symbol)
-
-            hist = data.history(period="2d")
-
-            old_price = hist["Close"].iloc[-2]
-            new_price = hist["Close"].iloc[-1]
-
-            percent = ((new_price - old_price) / old_price) * 100
-
-            results.append((name, round(percent, 2)))
-
+            hist = yf.Ticker(symbol).history(period="2d")
+            old = hist["Close"].iloc[-2]
+            new = hist["Close"].iloc[-1]
+            percent = round(((new - old) / old) * 100, 2)
+            results.append((name, percent))
         except:
             pass
 
     results.sort(key=lambda x: x[1], reverse=True)
-
-    message = "📈 TOP GAINERS\n\n"
-
-    for i, stock in enumerate(results[:5], start=1):
-
-        message += f"{i}. {stock[0]}  {stock[1]}%\n"
-
+    message = "📈 TOP GAINERS TODAY\n\n"
+    for i, (stock, change) in enumerate(results[:5], start=1):
+        message += f"{i}. 🟢 {stock}  +{change}%\n"
     return message
