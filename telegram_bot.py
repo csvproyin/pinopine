@@ -24,12 +24,20 @@ def send_photo(photo_path):
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
 
-    files = {
-        "photo": open(photo_path, "rb")
-    }
+    with open(photo_path, "rb") as photo:
 
-    data = {
-        "chat_id": CHAT_ID
-    }
+        files = {
+            "photo": photo
+        }
 
-    requests.post(url, files=files, data=data)
+        data = {
+            "chat_id": CHAT_ID
+        }
+
+        response = requests.post(
+            url,
+            files=files,
+            data=data
+        )
+
+        print(response.text)

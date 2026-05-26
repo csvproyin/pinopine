@@ -1,3 +1,5 @@
+from alerts_data import add_alert
+from alerts_data import check_alerts
 from market_news import get_market_news
 from market_movers import get_gainers, get_losers
 from scheduler import run_scheduler
@@ -6,7 +8,6 @@ from threading import Thread
 import os
 from portfolio import portfolio, save_portfolio
 from watchlist import watchlist, save_watchlist
-from alerts_data import alerts, save_alerts
 from live_price import get_stock_price
 from trading_signal import get_signal
 from chart_generator import generate_chart
@@ -47,38 +48,31 @@ morning_news = get_news()
 morning_result = analyze(morning_news)
 send_message("🌅 DAILY MARKET UPDATE\n\n" + morning_result)
 
+def keep_alive():
+    while True:
+        try:
+            requests.get("https://pinopine.onrender.com")
+            print("✅ Keep-alive ping sent")
+        except Exception as e:
+            print(f"⚠️ Keep-alive failed: {e}")
+        time.sleep(300)
+
 Thread(target=run_web).start()
 
 Thread(target=run_scheduler).start()
 
+Thread(target=keep_alive).start()
+
 while True:
     updates = get_updates()
 
+    alerts = check_alerts()
+
     for alert in alerts:
 
-        try:
+        send_message(alert)
 
-            stock = alert["stock"]
-            target = alert["target"]
-
-            result = get_stock_price(stock)
-
-            price_text = result.split("₹")[1]
-
-            current_price = float(price_text)
-
-            if current_price >= target:
-
-                send_message(
-                    f"🚨 PRICE ALERT\n\n"
-                    f"{stock.upper()} crossed ₹{target}\n\n"
-                    f"💰 Current Price: ₹{current_price}"
-                )
-
-                alerts.remove(alert)
-        except:
-            pass
-
+ 
     for u in updates["result"]:
 
         try:
@@ -179,22 +173,18 @@ while True:
                 send_message(result)
 
             elif text.startswith("/chart"):
-                stock_name = text.replace("/chart", "").strip()
 
+                stock_name = text.replace("/chart", "").strip()
                 if stock_name == "":
-                    send_message(
-                "❌ Example:\n/chart reliance"
-                )
+                    send_message("❌ Example:\n/chart reliance")
 
                 else:
                     send_message("📈 Generating stock chart...")
                     chart = generate_chart(stock_name)
-
-                if chart:
-                    send_photo(chart)
-
-                else:
-                    send_message("❌ Stock not found.")
+                    if chart:
+                        send_photo(chart)
+                    else:
+                        send_message("❌ Failed to generate chart.")
 
             elif text.startswith("/signal"):
                 stock_name = text.replace("/signal", "").strip()
@@ -218,18 +208,12 @@ while True:
                     )
 
                 else:
-
                     stock = parts[1].lower()
                     target = float(parts[2])
-                    alerts.append({   
-                    "stock": stock,
-                    "target": target
-                    })
-                    save_alerts()
-
-                send_message(
-                    f"🚨 Alert set for {stock.upper()} at ₹{target}"
-                )
+                    add_alert(stock, target)
+                    send_message(
+                        f"🚨 Alert set for {stock.upper()} at ₹{target}"
+                    )
 
             elif text.startswith("/watch"):
                 stock = text.replace("/watch", "").strip()
@@ -362,6 +346,7 @@ while True:
 
                     "/gainers\n"
                     "/losers\n" 
+                    "/market → AI market sentiment\n"
 
                     "😏 Built with AI + real-time market data"
                 )

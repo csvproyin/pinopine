@@ -1,38 +1,51 @@
-from live_price import get_stock_price
+import yfinance as yf
+from ta.momentum import RSIIndicator
 
 
 def get_signal(stock):
 
-    price = get_stock_price(stock)
+    try:
 
-    if price <= 0:
+        data = yf.download(
+            stock + ".NS",
+            period="3mo",
+            interval="1d"
+        )
 
-        return "❌ Stock not found."
+        if data.empty:
+            return "❌ Stock not found."
 
-    if price > 2500:
+        close_prices = data["Close"].squeeze()
 
-        signal = "🔥 STRONG BUY"
-        confidence = "89%"
-        sentiment = "Bullish momentum"
+        rsi = RSIIndicator(close_prices).rsi()
 
-    elif price > 1000:
+        latest_rsi = round(rsi.iloc[-1], 2)
 
-        signal = "📈 BUY"
-        confidence = "76%"
-        sentiment = "Positive trend"
+        latest_price = round(close_prices.iloc[-1], 2)
 
-    else:
+        if latest_rsi < 30:
+            signal = "🟢 BUY"
 
-        signal = "😏 HOLD"
-        confidence = "61%"
-        sentiment = "Neutral movement"
+        elif latest_rsi > 70:
+            signal = "🔴 SELL"
 
-    return (
-        f"🤖 AI SIGNAL REPORT\n\n"
-        f"📊 Stock: {stock.upper()}\n"
-        f"💰 Current Price: ₹{price}\n\n"
-        f"⚡ Signal: {signal}\n"
-        f"🎯 Confidence: {confidence}\n"
-        f"🧠 Sentiment: {sentiment}\n\n"
-        f"⚠️ Educational only. Not financial advice."
-    )
+        else:
+            signal = "⚠️ HOLD"
+
+        return f"""
+📊 {stock.upper()} SIGNAL
+
+💰 Price: ₹{latest_price}
+
+📈 RSI: {latest_rsi}
+
+🚦 Signal: {signal}
+
+🤖 AI Insight:
+RSI below 30 may indicate oversold conditions.
+RSI above 70 may indicate overbought conditions.
+"""
+
+    except Exception as e:
+
+        return f"❌ Error: {e}"
