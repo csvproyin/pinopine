@@ -1,3 +1,4 @@
+from market_news import get_market_news
 from market_movers import get_gainers, get_losers
 from scheduler import run_scheduler
 from flask import Flask
@@ -327,6 +328,14 @@ while True:
 
                 send_message(get_losers())
 
+            elif text == "/market":
+
+                send_message("🧠 Generating AI market sentiment...")
+
+                result = get_market_news()
+
+                send_message(result)
+
             # HELP
             elif text == "/help":
 
@@ -350,6 +359,9 @@ while True:
                     "🚨 ALERTS & AI\n"
                     "⚡ /signal <stock>\n"
                     "🚨 /alert <stock> <price>\n\n"
+
+                    "/gainers\n"
+                    "/losers\n" 
 
                     "😏 Built with AI + real-time market data"
                 )
